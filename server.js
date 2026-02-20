@@ -3,6 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const SpotifyWebApi = require('spotify-web-api-node');
+const { fork } = require('child_process');
 require('dotenv').config();
 
 const app = express();
@@ -106,7 +107,12 @@ io.on('connection', (socket) => {
 
 // Start the server
 const PORT = process.env.PORT || 8888;
-server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-  console.log(`Login via http://localhost:${PORT}/login`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server is live on port ${PORT}`);
+
+  // Start client.js automatically after a short delay to ensure the server is ready
+  setTimeout(() => {
+    console.log('[DEBUG] Starting client.js...');
+    fork('./client.js');
+  }, 1000);
 });
